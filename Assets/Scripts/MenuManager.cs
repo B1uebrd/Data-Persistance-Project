@@ -11,19 +11,32 @@ using UnityEditor;
 
 public class MenuManager : MonoBehaviour
 {
+    public static MenuManager MM;
     public InputField nameInput;
     public string username;
     public TextMeshProUGUI bestScore;
     public float score;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        if (MM != null)
+        {
+            GameObject.Destroy(MM);
+        }
+        else 
+        {
+            MM = this;
+        }
+        DontDestroyOnLoad(this);
+
         LoadInput();
         if (username != null)
         {
             nameInput.text = username;
         }
+
+        bestScore.text = "Best Score: " + username + " : " + score;
     }
 
     // Update is called once per frame
@@ -59,12 +72,12 @@ public class MenuManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(data);
 
-        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+        File.WriteAllText(Application.persistentDataPath + "/savebile.json", json);
     }
 
     public void LoadInput()
     {
-        string path = Application.persistentDataPath + "/savefile.json";
+        string path = Application.persistentDataPath + "/savebile.json";
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);

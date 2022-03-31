@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.IO;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text gameBestScore;
+    public int newScore;
 
     public GameObject GameOverText;
     
@@ -38,6 +41,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        LoadScore();
+        gameBestScore.text = "Best Score : " + MenuManager.MM.nameInput.text + " : " + newScore;
     }
 
     private void Update()
@@ -74,5 +79,37 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        newScore = m_Points;
+
+        gameBestScore.text = "Best Score : " + MenuManager.MM.nameInput.text + " : " + newScore;
+        SaveScore();
+    }
+    
+    [System.Serializable]
+    public class SaveData
+    {
+        public int newScore;
+    }
+
+    public void SaveScore()
+    {
+        SaveData data = new SaveData();
+        data.newScore = newScore;
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void LoadScore()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            newScore = data.newScore;
+        }
     }
 }
