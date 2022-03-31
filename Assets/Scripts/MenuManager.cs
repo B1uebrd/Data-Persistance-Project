@@ -17,6 +17,7 @@ public class MenuManager : MonoBehaviour
     public TextMeshProUGUI bestScore;
     public float score;
 
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -36,13 +37,24 @@ public class MenuManager : MonoBehaviour
             nameInput.text = username;
         }
 
-        bestScore.text = "Best Score: " + username + " : " + score;
+        MainManager mainManager = GetComponent<MainManager>();
+        mainManager.LoadName();
+
+        if(mainManager.newName == username)
+        {
+            mainManager.LoadScore();
+            bestScore.text = "Best Score: " + username + " : " + mainManager.newScore;
+        }
+        else
+        {
+            bestScore.text = "Best Score: " + username + " : " + mainManager.noScore;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        username = nameInput.text;
+            username = nameInput.text;
     }
 
     public void StartGame()
@@ -63,6 +75,7 @@ public class MenuManager : MonoBehaviour
     public class SaveData
     {
         public string username;
+        public string newUser;
     }
 
     public void SaveInput()

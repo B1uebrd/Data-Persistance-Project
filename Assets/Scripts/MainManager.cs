@@ -8,6 +8,7 @@ using System.IO;
 
 public class MainManager : MonoBehaviour
 {
+    public static MainManager mainM;
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
@@ -15,6 +16,9 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public Text gameBestScore;
     public int newScore;
+    public string newName;
+    public int noScore;
+    public int oldScore;
 
     public GameObject GameOverText;
     
@@ -41,8 +45,20 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        LoadName();
+        if (MenuManager.MM.username == newName)
+        {
         LoadScore();
-        gameBestScore.text = "Best Score : " + MenuManager.MM.nameInput.text + " : " + newScore;
+        oldScore = newScore;
+        SaveOldScore();
+        gameBestScore.text = "Best Score : " + MenuManager.MM.username + " : " + newScore;
+        }
+        else 
+        {
+            oldScore = noScore;
+            SaveOldScore();
+        gameBestScore.text = "Best Score : " + MenuManager.MM.username + " : " + noScore;
+        }
     }
 
     private void Update()
@@ -79,16 +95,32 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        newScore = m_Points;
+        newName = MenuManager.MM.username;
 
-        gameBestScore.text = "Best Score : " + MenuManager.MM.nameInput.text + " : " + newScore;
-        SaveScore();
+        LoadOldScore();
+        if (m_Points > oldScore)
+        {
+            newScore = m_Points;
+            gameBestScore.text = "Best Score : " + MenuManager.MM.username + " : " + newScore;
+            SaveScore();
+            SaveName();
+        }
+        else
+        {
+            newScore = oldScore;
+            gameBestScore.text = "Best Score : " + MenuManager.MM.username + " : " + newScore;
+            SaveScore();
+            SaveName();
+        }
+
     }
     
     [System.Serializable]
     public class SaveData
     {
         public int newScore;
+        public string newName;
+        public int oldScore;
     }
 
     public void SaveScore()
@@ -101,6 +133,26 @@ public class MainManager : MonoBehaviour
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
+    public void SaveName()
+    {
+        SaveData data = new SaveData();
+        data.newName = newName;
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savegile.json", json);
+    }
+
+    public void SaveOldScore()
+    {
+        SaveData data = new SaveData();
+        data.oldScore = oldScore;
+
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savesile.json", json);
+    }
+
     public void LoadScore()
     {
         string path = Application.persistentDataPath + "/savefile.json";
@@ -110,6 +162,30 @@ public class MainManager : MonoBehaviour
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
             newScore = data.newScore;
+        }
+    }
+
+    public void LoadName()
+    {
+        string path = Application.persistentDataPath + "/savegile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            newName = data.newName;
+        }
+    }
+
+    public void LoadOldScore()
+    {
+        string path = Application.persistentDataPath + "/savesile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            oldScore = data.oldScore;
         }
     }
 }

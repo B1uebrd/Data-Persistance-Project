@@ -426,6 +426,7 @@ GameObject:
   m_Component:
   - component: {fileID: 432711492}
   - component: {fileID: 432711491}
+  - component: {fileID: 432711493}
   m_Layer: 0
   m_Name: MenuManager
   m_TagString: Untagged
@@ -463,6 +464,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &432711493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 432711490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d110623a642692246a42fbc2d8d89884, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BrickPrefab: {fileID: 0}
+  LineCount: 6
+  Ball: {fileID: 0}
+  ScoreText: {fileID: 0}
+  gameBestScore: {fileID: 0}
+  newScore: 0
+  GameOverText: {fileID: 0}
 --- !u!1 &732699486
 GameObject:
   m_ObjectHideFlags: 0
